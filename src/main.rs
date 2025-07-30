@@ -1,4 +1,4 @@
-use dioxus::{logger::tracing::info, prelude::*};
+use dioxus::prelude::*;
 
 const MAIN_CSS: Asset = asset!("/assets/main.css");
 
@@ -54,7 +54,36 @@ fn DogView() -> Element {
         }
         div { id: "buttons",
             button { onclick: move |_| img_src.restart(), id: "skip", "skip" }
-            button { onclick: move |_| img_src.restart(), id: "save", "save!" }
+                        button {
+                id: "save",
+                onclick: move |_| async move {
+                    let current = img_src.cloned().unwrap();
+                    img_src.restart();
+                    _ = save_dog(current).await;
+                },
+
+                "save!"
+            }
         }
     }
+}
+
+
+// Expose a `save_dog` endpoint on our server that takes an "image" parameter
+#[server]
+async fn save_dog(image: String) -> Result<(), ServerFnError> {
+    use std::io::Write;
+
+    // Open the `dogs.txt` file in append-only mode, creating it if it doesn't exist;
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .append(true)
+        .create(true)
+        .open("dogs.txt")
+        .unwrap();
+
+    // And then write a newline to it with the image url
+    file.write_fmt(format_args!("{image}\n"));
+
+    Ok(())
 }
