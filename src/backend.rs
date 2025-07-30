@@ -1,3 +1,4 @@
+use dioxus::logger::tracing::info;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
@@ -33,6 +34,7 @@ thread_local! {
 
 #[server(endpoint = "list_dogs")]
 pub async fn list_dogs() -> Result<Vec<(usize, String)>, ServerFnError> {
+    info!("List dog images");
     let dogs = DB.with(|f| {
         f.prepare("SELECT id, url FROM dogs ORDER BY id DESC LIMIT 10")
             .unwrap()
@@ -47,13 +49,14 @@ pub async fn list_dogs() -> Result<Vec<(usize, String)>, ServerFnError> {
 
 #[server(endpoint = "remove_dog")]
 pub async fn remove_dog(id: usize) -> Result<(), ServerFnError> {
+    info!("Remove dog image id: {}", id);
     DB.with(|f| f.execute("DELETE FROM dogs WHERE id = ?1", [&id]))?;
     Ok(())
 }
 
 #[server(endpoint = "save_dog")]
 pub async fn save_dog(image: String) -> Result<(), ServerFnError> {
-    println!("Saving dog image: {}", image);
+    info!("Saving dog image: {}", image);
     _ = DB.with(|f| f.execute("INSERT INTO dogs (url) VALUES (?1)", [&image]));
     Ok(())
 }
