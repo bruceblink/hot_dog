@@ -27,8 +27,13 @@ fn Title() -> Element {
 #[component]
 fn DogView() -> Element {
     let skip = move |evt| {info!("Clicked skip ! Event: {evt:?}")};
-    let save = move |evt| {info!("Clicked save ! Event: {evt:?}")};
-    let img_src = use_hook(|| "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg");
+
+    let mut img_src = use_signal(|| "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg");
+
+    let save = move |evt| {
+        info!("Clicked save ! Event: {evt:?}");
+        img_src.set("https://images.dog.ceo/breeds/leonberg/n02111129_974.jpg");
+    };
     rsx! {
         div { id: "dogview",
             img { src: "{img_src}" }
