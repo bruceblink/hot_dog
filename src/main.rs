@@ -30,22 +30,37 @@ fn Title() -> Element {
     }
 }
 
+
+#[derive(serde::Deserialize)]
+struct DogApi {
+    message: String,
+}
+
 #[component]
 fn DogView() -> Element {
-    let skip = move |evt| {info!("Clicked skip ! Event: {evt:?}")};
+    
+    let mut img_src = use_signal(|| "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg".to_string());
 
-    let mut img_src = use_signal(|| "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg");
+    let fetch_new = move |_| async move {
+        let response = reqwest::get("https://dog.ceo/api/breeds/image/random")
+            .await
+            .unwrap()
+            .json::<DogApi>()
+            .await
+            .unwrap();
+
+        img_src.set(response.message);
+    };
 
     let save = move |evt| {
         info!("Clicked save ! Event: {evt:?}");
-        img_src.set("https://images.dog.ceo/breeds/leonberg/n02111129_974.jpg");
     };
     rsx! {
         div { id: "dogview",
             img { src: "{img_src}" }
         }
         div { id: "buttons",
-            button { onclick: skip, id: "skip", "skip" }
+            button { onclick: fetch_new, id: "skip", "skip" }
             button { onclick: save, id: "save", "save!" }
         }
     }
