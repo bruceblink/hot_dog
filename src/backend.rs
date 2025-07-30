@@ -2,7 +2,6 @@ use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 thread_local! {
-    use dioxus::logger::tracing::info;
     pub static DB: rusqlite::Connection = {
         // 1. 先找到当前可执行文件的完整路径
         let exe_path = std::env::current_exe()
@@ -14,7 +13,7 @@ thread_local! {
         let db_file = exe_dir.join("hotdog.db");
 
         // 打印一下路径，方便排查
-        info!("打开数据库文件：{:?}", db_file);
+        println!("打开数据库文件：{:?}", db_file);
 
         // 4. 用绝对路径打开（如果不存在，会自动创建）
         let conn = rusqlite::Connection::open(&db_file)
