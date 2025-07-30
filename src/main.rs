@@ -11,10 +11,16 @@ fn main() {
 #[component]
 fn App() -> Element {
     rsx! {
-        document::Link { rel: "icon", href: FAVICON }
-        document::Link { rel: "stylesheet", href: MAIN_CSS }
-        Hero {}
-
+        div { id: "title",
+            h1 { "HotDog! 🌭" }
+        }
+        div { id: "dogview",
+            img { src: "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg" }
+        }
+        div { id: "buttons",
+            button { id: "skip", "skip" }
+            button { id: "save", "save!" }
+        }
     }
 }
 
