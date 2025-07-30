@@ -1,8 +1,9 @@
 use dioxus::prelude::*;
+use crate::backend::{list_dogs, remove_dog};
 
 #[component]
 pub fn Favorites() -> Element {
-    let mut favorites = use_resource(crate::backend::list_dogs);
+    let mut favorites = use_resource(list_dogs);
 
     rsx! {
         div { id: "favorites",
@@ -12,7 +13,7 @@ pub fn Favorites() -> Element {
                         img { src: "{url}" }
                         button {
                             onclick: move |_| async move {
-                                crate::backend::remove_dog(id).await.unwrap();
+                                remove_dog(id).await.unwrap();
                                 favorites.restart();
                             },
                             "❌"
