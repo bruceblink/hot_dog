@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for hot-dog-solitary-brook-6267 on 2025-07-31T01:59:47+08:00
+# fly.toml app configuration file generated for hot-dog-9vxjg on 2025-07-30T19:36:00Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'hot-dog'
-primary_region = 'sjc'
+app = 'hot-dog-9vxjg'
+primary_region = 'ewr'
 
 [build]
 
@@ -20,7 +20,4 @@ primary_region = 'sjc'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-
-[mounts]
-source = "hotdogdb"
-destination = "/usr/local/app/hotdogdb"
+  memory_mb = 1024
