@@ -1,5 +1,5 @@
 [package]
-name = "hot_dog"
+name = "hotdog"
 version = "0.1.0"
 authors = ["likanug <likanug.g@qq.com>"]
 edition = "2021"
