@@ -2,19 +2,32 @@ use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 thread_local! {
+    use dioxus::logger::tracing::info;
     pub static DB: rusqlite::Connection = {
-        // Open the database from the persisted "hotdog.db" file
-        let conn = rusqlite::Connection::open("hotdogdb/hotdog.db").expect("Failed to open database");
+        // 1. 先找到当前可执行文件的完整路径
+        let exe_path = std::env::current_exe()
+            .expect("获取可执行文件路径失败");
+        // 2. 取其父目录（即可执行文件所在的目录）
+        let exe_dir = exe_path.parent()
+            .expect("无法获取可执行文件所在目录");
+        // 3. 拼出 hotdog.db 的绝对路径
+        let db_file = exe_dir.join("hotdog.db");
 
-        // Create the "dogs" table if it doesn't already exist
+        // 打印一下路径，方便排查
+        info!("打开数据库文件：{:?}", db_file);
+
+        // 4. 用绝对路径打开（如果不存在，会自动创建）
+        let conn = rusqlite::Connection::open(&db_file)
+            .unwrap_or_else(|e| panic!("打开数据库失败 ({:?}): {}", db_file, e));
+
+        // 5. 初始化表
         conn.execute_batch(
             "CREATE TABLE IF NOT EXISTS dogs (
-                id INTEGER PRIMARY KEY,
-                url TEXT NOT NULL
-            );",
-        ).unwrap();
+                id   INTEGER PRIMARY KEY,
+                url  TEXT NOT NULL
+            );"
+        ).unwrap_or_else(|e| panic!("初始化数据表失败: {}", e));
 
-        // Return the connection
         conn
     };
 }
