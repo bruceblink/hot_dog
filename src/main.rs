@@ -22,8 +22,8 @@ enum Route {
 }
 
 fn main() {
-   /* #[cfg(not(feature = "server"))]
-    server_fn::client::set_server_url("https://hot-dog-9vxjg.fly.dev/");*/
+    #[cfg(not(feature = "server"))]
+    server_fn::client::set_server_url("https://hot-dog-eqji-w.fly.dev");
     launch(app);
 }
 
